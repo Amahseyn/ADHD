@@ -1,2 +1,5 @@
-pandas
-tsfresh
+conda create --name adhd python=3.8
+pip install pandas
+pip install tsfresh
+pip install xgboost
+pip install -U aeon[all_extras]
