@@ -4,13 +4,11 @@ import warnings
 from sklearn import metrics
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import numpy as np
-from aeon.classification.feature_based import Catch22Classifier, FreshPRINCEClassifier
-from aeon.datasets import load_basic_motions, load_italy_power_demand
+from aeon.classification.distance_based import KNeighborsTimeSeriesClassifier
 from aeon.registry import all_estimators
 from aeon.transformations.collection.feature_based import Catch22
+from aeon.performance_metrics.forecasting import mean_absolute_percentage_error
 all_estimators("classifier", filter_tags={"algorithm_type": "feature"})
 dataX = pd.read_csv("/home/mio/Documents/code/ADHD/preprocessed_data/activity_features.csv", sep=";").sort_values(by="ID")
 dataY = pd.read_csv("patient_info.csv", sep=";").sort_values(by="ID")
@@ -53,11 +51,10 @@ X_train, X_test, y_train, y_test = train_test_split(
     test_size=0.25,
     random_state=0,
     stratify=dataY)
-c22 = Catch22()
-x_trans = c22.fit_transform(X_train)
-x_trans.shape
-(67, 22)
-c22cls = Catch22Classifier()
-c22cls.fit(X_train, y_train)
-c22_preds = c22cls.predict(X_test)
-metrics.accuracy_score(y_test, c22_preds)
+X_train = np.array(X_train)
+y_train = np.array(y_train)
+X_test = np.array(X_test)
+y_test = np.array(y_test)
+clf = KNeighborsTimeSeriesClassifier('dtw')
+y_pred = clf.fit(X_train, y_train)  # fit the classifier on train data
+print(mean_absolute_percentage_error(y_test, y_pred))

@@ -1,5 +1,9 @@
 conda create --name adhd python=3.8
 pip install pandas
+pip install matplotlib
+pip install lightgbm
 pip install tsfresh
 pip install xgboost
 pip install -U aeon[all_extras]
+pip install seaborn
+pip install hyperopt
